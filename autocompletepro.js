@@ -1,5 +1,8 @@
 ﻿/*
-Copyright © 2014 Dedra L. Welch; Licensed MIT:
+autocompletepro 0.0
+https://github.com/dlwelch/jQuery-widgets
+Copyright © 2014 Dedra L. Welch 
+Licensed MIT:
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
