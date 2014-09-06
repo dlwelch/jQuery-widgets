@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>DLW Widgets</title>
+    <style>
+        .ui-autocomplete-category {
+            font-weight: bold;
+        }
+
+        .ui-autocomplete {
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+    <script src="autocompletepro.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+           
+            $.getJSON('jazzdata.js', function (data) {
+                //alert(JSON.stringify(data.items));
+                $("#widgetbox").autocompletepro({
+                    autoFocus: true,
+                    itemsshown: 10,
+                    datasource: data.items,
+                    autodrop: true,
+                    searchfields: ["label", "artist", "year"],
+                    categorize: true,
+                    defaultvalue: [{ "artist": "Miles Davis", "label": "Kind of Blue" }],
+                    categoryfield: "category",
+                    filter: [{ "category": "Traditional" }, { "category": "Latin" }, { "category": "Cool" }, { "category": "Fusion" }, { "category": "Bebop" }]
+
+                });
+
+                $("#widgetbox").on("autocompleteproselect", { that: this }, function (event, ui) {
+                    $("div#info").html("");
+                    var dialogdiv = document.createElement("div");
+                    $(dialogdiv).append("You selected \"" + ui.item.label + "\". The entire item object has been saved in the \"value\" option of the autocompletepro widget. "
+                        + " After closing this dialog, click the Show Album Details button to see the recording details.").dialog({
+                            modal: true,
+                            title: "Jazz Recording Selected",
+                            buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            close: function () {
+                                $(dialogdiv).remove();
+                                $("#widgetbox").blur();
+                            }
+                        });
+                });
+
+                $("button#mybutton").button().click(function () {
+                    $("div#info").html("<p>Genre: " + $("#widgetbox").autocompletepro("value").category
+                        + "<br />Album: " + $("#widgetbox").autocompletepro("value").label
+                        + "<br />Artist: " + $("#widgetbox").autocompletepro("value").artist
+                        + "<br />Year: " + $("#widgetbox").autocompletepro("value").year
+                        );
+
+                    return false;
+                });
+            });
+
+        });
+        
+    </script>
+
+</head>
+<body>
+    <input id="widgetbox" style="width:300px;" /> &nbsp;&nbsp;<button id="mybutton">Show Artist</button>
+    <div id="info"></div>
+</body>
+</html>
+
+
