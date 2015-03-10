@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DLW Mobile Widgets</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.css" />
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.js"></script>
+
+    <!-- local data -->
+    <script src="jazzdata.js"></script>
+    <script src="jQMSelectFilterPro.js"></script>
+
+    <style>
+        .ui-block-a,
+        .ui-block-b {
+            padding: .25em;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#filterone").jqmselectfilterpro({
+                searchprompt: "Search for recording...",
+                maxitems: 500,
+                filterReveal: true,
+                source: jazzlist,
+                categoryfield: "category"
+            });
+            $("#filtertwo").jqmselectfilterpro({
+                searchprompt: "Search for title...",
+                maxitems: 10,
+                filterReveal: false,
+                source: jazzlist,
+            });
+
+            $("#showselectedRecording").click(function (event, ui) {
+                if ($("#filterone").jqmselectfilterpro("value") != null) $("#recordingInfo").html("You selected <b>"
+                    + $("#filterone").jqmselectfilterpro("value").label
+                    + "</b><br />Category: " + $("#filterone").jqmselectfilterpro("value").category
+                    + "<br />Artist: " + $("#filterone").jqmselectfilterpro("value").artist
+                    + "<br />Year: " + $("#filterone").jqmselectfilterpro("value").year)
+                else $("#recordingInfo").html("No Selection Made");
+                return false;
+            });
+            $("#showselectedTitle").click(function (event, ui) {
+                if ($("#filtertwo").jqmselectfilterpro("value") != null) $("#titleInfo").html("You selected <b>"
+                    + $("#filtertwo").jqmselectfilterpro("value").label
+                    + "</b><br />Category: " + $("#filtertwo").jqmselectfilterpro("value").category
+                    + "<br />Artist: " + $("#filtertwo").jqmselectfilterpro("value").artist
+                    + "<br />Year: " + $("#filtertwo").jqmselectfilterpro("value").year)
+                else $("#titleInfo").html("No Selection Made");
+                return false;
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div data-role="page" id="page1">
+        <!-- http://demos.jquerymobile.com/1.4.5/filterable/ -->
+        <h3>jQuery Mobile Filterable Custom Select Widget</h3>
+        <div class="ui-grid-a">
+            <div class="ui-block-a">
+                <select id="filterone" data-role="none" data-native-menu="false" data-theme="b"></select>
+            </div>
+            <div class="ui-block-b">
+                <select id="filtertwo" data-role="none" data-native-menu="false" data-theme="b"></select>
+            </div>
+
+            <div class="ui-block-a">
+                <button id="showselectedRecording" data-theme="b">Show Recording</button>
+            </div>
+            <div class="ui-block-b">
+                <button id="showselectedTitle" data-theme="b">Show Title</button>
+            </div>
+
+            <div class="ui-block-a">
+                <div id="recordingInfo"></div>
+            </div>
+            <div class="ui-block-b">
+                <div id="titleInfo"></div> 
+            </div>
+        </div>
+        
+        
+    </div>
+    
+
+</body>
+</html>
