@@ -13,7 +13,7 @@
 
     <!-- local data -->
     <script src="jazzdata.js"></script>
-    <script src="jQMSelectFilterPro.js"></script>
+    <script src="jQMSelectFilterPro.min.js"></script>
 
     <style>
         .ui-block-a,
@@ -28,13 +28,16 @@
                 maxitems: 500,
                 filterReveal: true,
                 source: jazzlist,
-                categoryfield: "category"
+                categoryfield: "category",
+                searchfields: ["category", "label"],
+                defaultvalue: [{ "artist": "Miles Davis", "label": "Kind of Blue" }]
             });
             $("#filtertwo").jqmselectfilterpro({
                 searchprompt: "Search for title...",
                 maxitems: 10,
                 filterReveal: false,
                 source: jazzlist,
+                searchfields: ["category", "label"]
             });
 
             $("#showselectedRecording").click(function (event, ui) {
