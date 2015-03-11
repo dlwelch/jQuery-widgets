@@ -1,5 +1,5 @@
 /*
-jqmselectfilterpro 0.0
+jQMSelectFilterPro 0.0
 https://github.com/dlwelch/jQuery-widgets
 Copyright © 2015 Dedra L. Welch 
 Licensed MIT:
@@ -31,13 +31,38 @@ $.widget("custom.jqmselectfilterpro", {
         defaultvalue: []
     },
     _selectedvalue: null,
+    _visibleitems: 0,
     value: function () {
         if ($.type(this._selectedvalue) === "undefined") { return null; }
         else {
             return this._selectedvalue;
         }
     },
-    _visibleitems: 0,
+    /*
+    selects a specified single item passed in an array
+     i.e. [{"one": "1", "two" : "2 ", ... }]
+     since we are using _compareObjectKeys function
+     remember, we really don't care about the value of the select
+     so no need to fire the select event
+   */
+    selectitem: function (item) {
+        if ($.isArray(item)) {
+            var _that = this;
+            var myItem = $.grep(this.options.source.items, function (element, index) {
+                return _that._compareObjectKeys(element, item);
+            });
+            if (myItem.length > 0) {
+                this.element.val(myItem[0].label);
+                $(this.element).find("option:first").html(myItem[0].label);
+                this._selectedvalue = myItem[0];
+            }
+            else {
+                this.element.val(this.options.searchprompt);
+                $(this.element).find("option:first").html(this.options.searchprompt);
+                this._selectedvalue = null;
+            }
+        }
+    },
     _create: function () {
         var _that = this;
 
@@ -57,10 +82,11 @@ $.widget("custom.jqmselectfilterpro", {
                 _that.element.append(currentCategoryOptgroup);
                 currentCategory = item["category"];
             }
+
             var thisoption = document.createElement("option");
             $(thisoption).attr("value", index)
                 .html(item["label"])
-                .attr("data-filtertext", item["category"] + item["label"])
+                .attr("data-filtertext", _that._getfiltertext(item))
                 .addClass("jqmselectfilterprosearchable");
             if (_that.options.categoryfield != null) {
                 $(currentCategoryOptgroup).append(thisoption);
@@ -68,6 +94,7 @@ $.widget("custom.jqmselectfilterpro", {
                 _that.element.append(thisoption);
             }
         });
+        this.selectitem(this.options.defaultvalue);
 
         this.element.on("selectmenucreate", function (event) {
 
@@ -102,7 +129,7 @@ $.widget("custom.jqmselectfilterpro", {
             $("#" + selectmenu.attr("id") + "-listbox").on("popupbeforeposition", function (event, uiempty) {
                 //update the title of the popup to the currently selected label
                 $(this).find("h1").html(selectmenu.find(":selected").text());
-                // un-highlight the li since it won't follow correctly if using option categories (the jquery selectmenu filterable doesn't do it right...)
+                // if using option categories, un-highlight the li since it won't follow correctly (the jquery selectmenu filterable doesn't do it right...)
                 if (_that.options.categoryfield != null)
                     $(this).find("ul").find("[aria-selected='true']").attr("aria-selected", false).find("a").removeClass("ui-btn-active");
 
@@ -203,5 +230,36 @@ $.widget("custom.jqmselectfilterpro", {
         });
 
         this.element.selectmenu();
+        
+    },
+    _getfiltertext: function (element) {
+
+        var _matchterm = "";
+        $.each(this.options.searchfields, function (i, e) {
+            _matchterm += element[e];
+        });
+        return _matchterm;
+    },
+    /*
+    compares an object to each object in an array of objects
+    returns true if the object contains a matched set of elements from
+    any of the objects in the array - used for filtering
+    */
+    _compareObjectKeys: function (element, set) {
+        var filterlength = set.length;
+        for (var i = 0; i < filterlength; i++) {
+            var thisone = true;
+            for (var property in set[i]) {
+                if (set[i].hasOwnProperty(property)) {
+                    if (element[property] != set[i][property]) {
+                        thisone = false;
+                    }
+                }
+            }
+            if (thisone == true) {
+                return true;
+            }
+        }
+        return false;
     }
 });
