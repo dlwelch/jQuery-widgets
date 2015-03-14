@@ -164,6 +164,9 @@ $.widget("custom.jqmselectfilterpro", {
 
                         //update the title of the dialog to the currently selected label
                         data.toPage.find("div.ui-title").html($("#" + _that.element.attr("id")).find(":selected").text());
+
+                        /// highlight the correct listview item
+                        _that._hiliteselection(_that.element);
                     }
                 })
                 .on("pagecontainerhide", function (event, data) {
@@ -223,7 +226,7 @@ $.widget("custom.jqmselectfilterpro", {
     },
     _hiliteselection: function (element) {
         // correctly highlight the currently selected link button  
-        //(the jquery selectmenu filterable doesn't do it right..imho..)
+        //(the jquery selectmenu filterable doesn't do it right...)
         var currentindex = parseInt(element.find(":selected").attr("value"));
         $("#" + element.attr("id") + "-listbox").find("li[aria-selected='true']").attr("aria-selected", false).find("a").removeClass("ui-btn-active");
         $("#" + element.attr("id") + "-listbox").find("li[data-option-index='" + currentindex + "']").attr("aria-selected", true).find("a").addClass("ui-btn-active");
