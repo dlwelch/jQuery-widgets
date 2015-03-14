@@ -75,8 +75,7 @@ $.widget("custom.jqmselectfilterpro", {
 
             //use this to sync up the source items and the select options 
             // i.e.select.val() = item.jqmselectfilterprovalue
-            // +1 since the first option (placeholder) has a listview data-option-index of 0
-            item["jqmselectfilterprovalue"] = parseInt(index)+1;
+            item["jqmselectfilterprovalue"] = index;
 
             if (item["category"] != currentCategory && _that.options.categoryfield != null) {
                 currentCategoryOptgroup = document.createElement("optgroup");
@@ -86,7 +85,7 @@ $.widget("custom.jqmselectfilterpro", {
             }
 
             var thisoption = document.createElement("option");
-            $(thisoption).attr("value", parseInt(index) + 1)
+            $(thisoption).attr("value", index)
                 .html(item["label"])
                 .attr("data-filtertext", _that._getfiltertext(item))
                 .addClass("jqmselectfilterprosearchable");
@@ -227,7 +226,7 @@ $.widget("custom.jqmselectfilterpro", {
     _hiliteselection: function (element) {
         // correctly highlight the currently selected link button  
         //(the jquery selectmenu filterable doesn't do it right...)
-        var currentindex = parseInt(element.find(":selected").attr("value"));
+        var currentindex = parseInt(element.find(":selected").attr("value"))+1;
         $("#" + element.attr("id") + "-listbox").find("li[aria-selected='true']").attr("aria-selected", false).find("a").removeClass("ui-btn-active");
         $("#" + element.attr("id") + "-listbox").find("li[data-option-index='" + currentindex + "']").attr("aria-selected", true).find("a").addClass("ui-btn-active");
 
