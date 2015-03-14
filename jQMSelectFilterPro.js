@@ -127,10 +127,12 @@ $.widget("custom.jqmselectfilterpro", {
                 //update the popup title
                 $("#" + _that.element.attr("id") + "-listbox").find("h1").html(_that._selectedvalue.label);
             });
-
-            //set the focus to the input search box in the popup when it opens
+           
             $("#" + _that.element.attr("id") + "-listbox-popup").on("popupafteropen", function () {
+                //set the focus to the input search box in the popup when it opens
                 $('input').focus();
+                // highlight the correct listview item
+                _that._hiliteselection(_that.element);
             });
 
             //The following code is used when selectmenu opens a dialog (page) instead of a popup
@@ -206,15 +208,8 @@ $.widget("custom.jqmselectfilterpro", {
                 //reset the current number of visible items
                 _that._visibleitems = 0;
             }).on("filterablefilter", function () {
-                // correctly highlight the currently selected link button  
-                //(the jquery selectmenu filterable doesn't do it right..imho..)
-                var currentindex = parseInt(_that.element.find(":selected").attr("value"));
-                $("#" + _that.element.attr("id") + "-listbox").find("li[aria-selected='true']").attr("aria-selected", false).find("a").removeClass("ui-btn-active");
-                $("#" + _that.element.attr("id") + "-listbox").find("li[data-option-index='" + currentindex + "']").attr("aria-selected", true).find("a").addClass("ui-btn-active");
-
-                //this will not be needed in jQM 1.5
-                $("#" + _that.element.attr("id") + "-dialog").find("li[aria-selected='true']").attr("aria-selected", false).find("a").removeClass("ui-btn-active");
-                $("#" + _that.element.attr("id") + "-dialog").find("li[data-option-index='" + currentindex + "']").attr("aria-selected", true).find("a").addClass("ui-btn-active");
+                /// highlight the correct listview item
+                _that._hiliteselection(_that.element);
             });
         });
         this.element.selectmenu();
@@ -225,6 +220,18 @@ $.widget("custom.jqmselectfilterpro", {
             _matchterm += element[e];
         });
         return _matchterm;
+    },
+    _hiliteselection: function (element) {
+        // correctly highlight the currently selected link button  
+        //(the jquery selectmenu filterable doesn't do it right..imho..)
+        var currentindex = parseInt(element.find(":selected").attr("value"));
+        $("#" + element.attr("id") + "-listbox").find("li[aria-selected='true']").attr("aria-selected", false).find("a").removeClass("ui-btn-active");
+        $("#" + element.attr("id") + "-listbox").find("li[data-option-index='" + currentindex + "']").attr("aria-selected", true).find("a").addClass("ui-btn-active");
+
+        //this will not be needed in jQM 1.5
+        $("#" + element.attr("id") + "-dialog").find("li[aria-selected='true']").attr("aria-selected", false).find("a").removeClass("ui-btn-active");
+        $("#" + element.attr("id") + "-dialog").find("li[data-option-index='" + currentindex + "']").attr("aria-selected", true).find("a").addClass("ui-btn-active");
+
     },
     _compareObjectKeys: function (element, set) {
         var filterlength = set.length;
